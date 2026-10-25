@@ -140,22 +140,35 @@ section{scroll-margin-top:76px}
 .search input{flex:1;min-width:220px;padding:13px 16px;border:1.5px solid var(--line);border-radius:999px;font:inherit;background:var(--bg)}
 .search input:focus{outline:none;border-color:var(--teal)}
 .chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:26px}
-.chip{border:1.5px solid var(--line);background:var(--bg);border-radius:999px;padding:8px 14px;font:inherit;font-weight:700;font-size:.9rem;cursor:pointer;color:var(--ink)}
-.chip[aria-pressed="true"]{background:var(--teal-d);border-color:var(--teal-d);color:#fff}
-.chip small{opacity:.7;font-weight:600}
+.chip{--c:var(--teal-d);display:inline-flex;align-items:center;gap:8px;border:2px solid var(--c);background:color-mix(in srgb,var(--c) 8%,#fff);border-radius:999px;padding:7px 14px 7px 8px;font:inherit;font-weight:700;font-size:.9rem;cursor:pointer;color:var(--c);transition:.2s}
+.chip:hover{transform:translateY(-2px);box-shadow:0 4px 12px color-mix(in srgb,var(--c) 30%,transparent)}
+.chip .ci{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:var(--c);color:#fff}
+.chip .ci svg{width:17px;height:17px}
+.chip[aria-pressed="true"]{background:var(--c);color:#fff}
+.chip[aria-pressed="true"] .ci{background:#fff;color:var(--c)}
+.chip small{opacity:.75;font-weight:700;background:rgba(0,0,0,.08);border-radius:999px;padding:0 7px}
+.chip[aria-pressed="true"] small{background:rgba(255,255,255,.25)}
+.chip.all{padding-left:14px}
+.filter-hint{font-size:.85rem;color:var(--muted);margin:-14px 0 22px}
 .group{margin-bottom:30px}
-.group-head{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:10px;border-bottom:2px solid var(--teal-l);padding-bottom:8px;margin-bottom:14px}
-.group-head h3{margin:0;color:var(--teal-d);font-size:1.25rem}
+.group{--c:var(--teal-d)}
+.group-head{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;border-bottom:3px solid var(--c);padding-bottom:8px;margin-bottom:14px}
+.group-head h3{margin:0;color:var(--c);font-size:1.25rem;display:flex;align-items:center;gap:10px}
+.group-head h3 .gi{width:36px;height:36px;border-radius:10px;background:var(--c);color:#fff;display:grid;place-items:center}
+.group-head h3 .gi svg{width:22px;height:22px}
 .group-head .rdv{font-size:.9rem;color:var(--muted)}
 .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
-.pro{background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:6px}
+.pro{background:color-mix(in srgb,var(--c) 7%,#fff);border:2px solid color-mix(in srgb,var(--c) 45%,#fff);border-left:6px solid var(--c);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:6px}
 .pro .who{display:flex;align-items:center;gap:12px}
-.avatar{flex:0 0 44px;height:44px;border-radius:50%;background:var(--teal-l);color:var(--teal-d);display:grid;place-items:center;font-weight:800}
+.avatar{flex:0 0 46px;height:46px;border-radius:50%;background:var(--c);color:#fff;display:grid;place-items:center;box-shadow:0 3px 10px color-mix(in srgb,var(--c) 35%,transparent)}
+.avatar svg{width:26px;height:26px}
+.pro:hover .avatar{animation:wiggle .5s}
+@keyframes wiggle{25%{transform:rotate(-10deg)}75%{transform:rotate(10deg)}}
 .pro h4{margin:0;font-size:1rem}
-.pro .job{font-size:.85rem;color:var(--muted)}
+.pro .job{font-size:.85rem;color:var(--c);font-weight:700}
 .pro .note{font-size:.82rem;color:var(--brown-l);font-weight:700}
 .pro .acts{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
-.pro .acts a{font-size:.85rem;font-weight:800;text-decoration:none;padding:6px 12px;border-radius:999px;border:1.5px solid var(--teal-d);color:var(--teal-d)}
+.pro .acts a{font-size:.85rem;font-weight:800;text-decoration:none;padding:6px 12px;border-radius:999px;border:1.5px solid var(--c);color:var(--c);background:#fff}
 .pro .acts a.doc{background:#107aca;border-color:#107aca;color:#fff}
 .perm{display:inline-block;background:#fff7e6;color:#8a5a00;border:1px solid #f1d9a6;font-size:.82rem;font-weight:700;padding:4px 10px;border-radius:10px}
 .empty{display:none;color:var(--muted);padding:20px;text-align:center}
@@ -490,6 +503,7 @@ footer li{margin:.35em 0}
       <input id="q" type="search" placeholder="Chercher un professionnel par son nom…" autocomplete="off">
     </div>
     <div class="chips" id="chips" role="group" aria-label="Filtrer par profession"></div>
+    <p class="filter-hint">Astuce : cliquez sur plusieurs professions pour les afficher ensemble.</p>
     <div id="groups"></div>
     <p class="empty" id="empty">Aucun professionnel ne correspond à votre recherche.</p>
   </div>
@@ -818,26 +832,42 @@ const TEAM = [
   {id:"psy", label:"Psychologue – neuropsychologue", rdv:"Doctolib · 06 78 69 29 01", people:[
     {n:"M. Benjamin Lebon-Klejmont", t:"06 78 69 29 01", d:"https://www.doctolib.fr/psychologue/merville/benjamin-lebon-klejmont?pid=practice-365049"}]}
 ];
+const S=(d)=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${d}</svg>`;
+const ICON={
+  med:S('<path d="M6 3v5a4 4 0 0 0 8 0V3"/><path d="M10 12v2a5 5 0 0 0 10 0v-1"/><circle cx="20" cy="11" r="2"/>'),
+  ide:S('<path d="M18 2l4 4"/><path d="M17 7l3-3"/><path d="M19 9L9 19l-4 1 1-4L16 6z"/><path d="M11 11l2 2"/><path d="M14 8l2 2"/>'),
+  kine:S('<circle cx="12" cy="4" r="2"/><path d="M4 9l8 1 8-1"/><path d="M12 10v5"/><path d="M8 22l4-7 4 7"/>'),
+  ortho:S('<path d="M21 11.5a8.5 8.5 0 0 1-12.4 7.6L3 20l1-5A8.5 8.5 0 1 1 21 11.5z"/><path d="M8.5 10h7"/><path d="M8.5 13.5h4.5"/>'),
+  osteo:S('<rect x="8" y="2" width="8" height="4" rx="1.5"/><rect x="7.5" y="8" width="9" height="4" rx="1.5"/><rect x="7" y="14" width="10" height="4" rx="1.5"/><path d="M10 20h4"/><path d="M5 4h2M17 4h2M4 10h3M17 10h3M4 16h3M17 16h3"/>'),
+  podo:S('<path d="M8 21c-2.5 0-3.5-2.5-3-5 .5-2.5 2-4 2-7 0-2 1.5-3 3-3s3 1.5 2.5 4c-.5 3-1.5 4.5-1 7 .3 2-1 4-3.5 4z"/><circle cx="14" cy="5" r="1.3"/><circle cx="16.5" cy="7" r="1.1"/><circle cx="18" cy="9.8" r="1"/><circle cx="18.6" cy="12.6" r=".9"/>'),
+  psy:S('<path d="M9 21v-3.5A7 7 0 1 1 17.5 11l1.5 3h-2v2.5a2 2 0 0 1-2 2H13V21"/><path d="M11.5 7.2c.8-.9 2.4-.6 2.6.7.2 1.3-1.6 2.4-2.6 3-1-.6-2.8-1.7-2.6-3 .2-1.3 1.8-1.6 2.6-.7z"/>'),
+  all:S('<circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><path d="M15 14.5c3 0 6 1.8 6 5"/>')
+};
+const COL={med:"#2563b8",ide:"#d0457a",kine:"#2e9150",ortho:"#7c4dc4",osteo:"#d9701a",podo:"#0f8f8f",psy:"#a8790a"};
 const JOB = {med:"Médecin généraliste",ide:"Infirmier·e",kine:"Masseur-kinésithérapeute",ortho:"Orthophoniste",osteo:"Ostéopathe",podo:"Pédicure-podologue",psy:"Psychologue – neuropsychologue"};
 const esc=s=>s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const norm=s=>s.normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase();
 const initials=n=>n.replace(/^(Dr|Mme|M\.)\s+/,"").split(/[\s-]+/).slice(0,2).map(w=>w[0]).join("").toUpperCase();
-let current="all";
+let current=new Set();
 const chips=document.getElementById("chips"), groups=document.getElementById("groups"), q=document.getElementById("q");
-function chip(id,label,count){const b=document.createElement("button");b.className="chip";b.type="button";b.dataset.id=id;b.setAttribute("aria-pressed",id===current);b.innerHTML=esc(label)+(count?` <small>${count}</small>`:"");b.onclick=()=>{current=id;render()};return b;}
+function chip(id,label,count){const b=document.createElement("button");b.className="chip"+(id==="all"?" all":"");b.type="button";b.dataset.id=id;
+  const on=id==="all"?current.size===0:current.has(id);b.setAttribute("aria-pressed",on);
+  if(COL[id])b.style.setProperty("--c",COL[id]);
+  b.innerHTML=(id==="all"?"":`<span class="ci" aria-hidden="true">${ICON[id]}</span>`)+esc(label)+(count?` <small>${count}</small>`:"");
+  b.onclick=()=>{if(id==="all")current.clear();else current.has(id)?current.delete(id):current.add(id);render()};return b;}
 function render(){
   chips.innerHTML="";
   chips.appendChild(chip("all","Toute l'équipe"));
   TEAM.forEach(g=>chips.appendChild(chip(g.id,g.label,g.people.length)));
   const term=norm(q.value.trim()); let shown=0; groups.innerHTML="";
   TEAM.forEach(g=>{
-    if(current!=="all"&&current!==g.id) return;
+    if(current.size&&!current.has(g.id)) return;
     const ppl=g.people.filter(p=>!term||norm(p.n).includes(term)||norm(g.label).includes(term));
     if(!ppl.length) return; shown+=ppl.length;
-    const sec=document.createElement("div"); sec.className="group";
-    sec.innerHTML=`<div class="group-head"><h3>${esc(g.label)}</h3><span class="rdv">${esc(g.rdv)}</span></div><div class="cards">${ppl.map(p=>`
+    const sec=document.createElement("div"); sec.className="group"; sec.style.setProperty("--c",COL[g.id]);
+    sec.innerHTML=`<div class="group-head"><h3><span class="gi" aria-hidden="true">${ICON[g.id]}</span>${esc(g.label)}</h3><span class="rdv">${esc(g.rdv)}</span></div><div class="cards">${ppl.map(p=>`
       <article class="pro">
-        <div class="who"><div class="avatar" aria-hidden="true">${initials(p.n)}</div><div><h4>${esc(p.n)}</h4><div class="job">${JOB[g.id]}</div></div></div>
+        <div class="who"><div class="avatar" aria-hidden="true">${ICON[g.id]}</div><div><h4>${esc(p.n)}</h4><div class="job">${JOB[g.id]}</div></div></div>
         ${p.note?`<div class="note">${esc(p.note)}</div>`:""}
         ${p.p?`<div><span class="perm">${esc(p.p)}</span></div>`:""}
         <div class="acts">
@@ -888,7 +918,7 @@ const tabs=[...document.querySelectorAll('.tab')];
 function selectTab(tb){tabs.forEach(x=>{const on=x===tb;x.setAttribute('aria-selected',on);x.tabIndex=on?0:-1;document.getElementById(x.getAttribute('aria-controls')).classList.toggle('active',on)});}
 tabs.forEach((tb,i)=>{tb.onclick=()=>selectTab(tb);tb.onkeydown=e=>{let j=null;if(e.key==='ArrowRight')j=(i+1)%tabs.length;if(e.key==='ArrowLeft')j=(i-1+tabs.length)%tabs.length;if(j!==null){e.preventDefault();tabs[j].focus();selectTab(tabs[j])}}});
 // Liens vers une profession de l'annuaire
-document.querySelectorAll('[data-filter]').forEach(a=>a.addEventListener('click',()=>{current=a.dataset.filter;q.value='';render()}));
+document.querySelectorAll('[data-filter]').forEach(a=>a.addEventListener('click',()=>{current=new Set([a.dataset.filter]);q.value='';render()}));
 document.getElementById("y").textContent=new Date().getFullYear();
 </script>
 </body>
