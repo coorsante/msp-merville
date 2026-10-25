@@ -513,7 +513,7 @@ footer li{margin:.35em 0}
       <div class="box reveal">
         <h3>Prendre rendez-vous</h3>
         <ul>
-          <li><strong>Sur internet</strong> : via Doctolib (médecins, kinésithérapeutes, ostéopathes, pédicures-podologues, psychologue).</li>
+          <li><strong>Sur internet</strong> : via Doctolib pour les médecins, M. Woiciechowski (kinésithérapeute) et le psychologue ; via orthophoniste.com pour l'orthophoniste.</li>
           <li><strong>Par téléphone</strong> : au numéro indiqué sur la fiche du professionnel. Médecins : <a href="tel:+33328400735">03 28 40 07 35</a>.</li>
           <li><strong>Sur place</strong> : à l'accueil de la maison de santé, aux heures d'ouverture.</li>
         </ul>
@@ -786,8 +786,7 @@ footer li{margin:.35em 0}
 </footer>
 
 <script>
-const DOCTOLIB = "https://www.doctolib.fr/";
-// Pour chaque professionnel : remplacer "doctolib: DOCTOLIB" par l'URL exacte de sa page Doctolib.
+// d : lien Doctolib · w : autre site de prise de rendez-vous en ligne
 const TEAM = [
   {id:"med", label:"Médecins généralistes", rdv:"Doctolib · 03 28 40 07 35 · ou à l'accueil", people:[
     {n:"Dr Charlotte Bailleul", t:"03 28 40 07 35", d:"https://www.doctolib.fr/medecin-generaliste/merville/charlotte-bailleul?pid=practice-149485"},
@@ -805,19 +804,19 @@ const TEAM = [
     {n:"M. Christophe Lagae", t:"03 28 48 65 37", p:"Sans RDV lun–sam 8h30–9h30"},
     {n:"Mme Caroline Lenglart", t:"03 28 48 65 37", p:"Sans RDV lun–sam 8h30–9h30"},
     {n:"M. Jean-Rémi Mayolle", t:"03 28 48 65 37", p:"Sans RDV lun–sam 8h30–9h30"}]},
-  {id:"kine", label:"Masseurs-kinésithérapeutes", rdv:"Doctolib · 03 28 42 80 90", people:[
-    {n:"M. Pascal Vittu", t:"03 28 42 80 90", d:DOCTOLIB},
-    {n:"M. Marc Woiciechowski", t:"03 28 42 80 90", d:DOCTOLIB}]},
-  {id:"ortho", label:"Orthophoniste", rdv:"Par téléphone", people:[
-    {n:"Mme Justine Debay Legrand", t:"07 69 16 17 15"}]},
-  {id:"osteo", label:"Ostéopathes", rdv:"Doctolib", people:[
-    {n:"M. Guillaume Delahaye", t:"06 74 40 50 48", d:DOCTOLIB},
-    {n:"Mme Hortense Revillion", d:DOCTOLIB}]},
-  {id:"podo", label:"Pédicures-podologues", rdv:"Doctolib · 07 78 81 14 13", people:[
-    {n:"M. Romain Huxley", t:"07 78 81 14 13", d:DOCTOLIB},
-    {n:"Mme Jennifer Coeugneit", t:"07 78 81 14 13", d:DOCTOLIB, note:"Collaboratrice"}]},
+  {id:"kine", label:"Masseurs-kinésithérapeutes", rdv:"Par téléphone au 03 28 42 80 90 · Doctolib pour M. Woiciechowski", people:[
+    {n:"M. Pascal Vittu", t:"03 28 42 80 90"},
+    {n:"M. Marc Woiciechowski", t:"03 28 42 80 90", d:"https://www.doctolib.fr/masseur-kinesitherapeute/merville/marc-woiciechowski-merville?pid=practice-653687"}]},
+  {id:"ortho", label:"Orthophoniste", rdv:"En ligne sur orthophoniste.com ou par téléphone", people:[
+    {n:"Mme Justine Debay Legrand", t:"07 69 16 17 15", w:"https://orthophoniste.com/therapeute/justine-legrand-55482"}]},
+  {id:"osteo", label:"Ostéopathes", rdv:"Par téléphone ou à l'accueil", people:[
+    {n:"M. Guillaume Delahaye", t:"06 74 40 50 48"},
+    {n:"Mme Hortense Revillion", note:"Renseignements à l'accueil"}]},
+  {id:"podo", label:"Pédicures-podologues", rdv:"Par téléphone au 07 78 81 14 13", people:[
+    {n:"M. Romain Huxley", t:"07 78 81 14 13"},
+    {n:"Mme Jennifer Coeugneit", t:"07 78 81 14 13", note:"Collaboratrice"}]},
   {id:"psy", label:"Psychologue – neuropsychologue", rdv:"Doctolib · 06 78 69 29 01", people:[
-    {n:"M. Benjamin Lebon-Klejmont", t:"06 78 69 29 01", d:DOCTOLIB}]}
+    {n:"M. Benjamin Lebon-Klejmont", t:"06 78 69 29 01", d:"https://www.doctolib.fr/psychologue/merville/benjamin-lebon-klejmont?pid=practice-365049"}]}
 ];
 const JOB = {med:"Médecin généraliste",ide:"Infirmier·e",kine:"Masseur-kinésithérapeute",ortho:"Orthophoniste",osteo:"Ostéopathe",podo:"Pédicure-podologue",psy:"Psychologue – neuropsychologue"};
 const esc=s=>s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
@@ -843,6 +842,7 @@ function render(){
         ${p.p?`<div><span class="perm">${esc(p.p)}</span></div>`:""}
         <div class="acts">
           ${p.d?`<a class="doc" href="${p.d}" target="_blank" rel="noopener">Doctolib</a>`:""}
+          ${p.w?`<a class="doc" href="${p.w}" target="_blank" rel="noopener">RDV en ligne</a>`:""}
           ${p.t?`<a href="tel:+33${p.t.replace(/\s/g,"").slice(1)}">☎ ${esc(p.t)}</a>`:""}
         </div>
       </article>`).join("")}</div>`;
